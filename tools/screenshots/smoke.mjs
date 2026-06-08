@@ -154,11 +154,20 @@ function startPreview() {
   const cwd = join(ROOT, "lessons", "05-the-real-thing", "compare-app");
   const proc = spawn("npm", ["run", "preview"], { cwd, stdio: ["ignore", "pipe", "pipe"], detached: true });
   return new Promise((resolve, reject) => {
-    const t = setTimeout(() => reject(new Error("vite preview did not start in time — did you run `npm run build` in compare-app?")), 30000);
-    proc.stdout.on("data", (d) => {
-      const m = String(d).match(/Local:\s+(http:\/\/\S+)/);
+    // Accumulate ALL output and match the running buffer — Vite's "Local:" banner can arrive split
+    // across stdout chunks on a slow runner, so matching each chunk in isolation would miss it.
+    let buf = "";
+    const onData = (d) => {
+      buf += String(d);
+      const m = buf.match(/Local:\s+(http:\/\/\S+)/);
       if (m) { clearTimeout(t); resolve({ proc, url: m[1].replace(/\/$/, "") }); }
-    });
+    };
+    const t = setTimeout(
+      () => reject(new Error(`vite preview did not start in time — did you run \`npm run build\` in compare-app?\n--- preview output ---\n${buf}`)),
+      60000
+    );
+    proc.stdout.on("data", onData);
+    proc.stderr.on("data", onData);
     proc.on("error", reject);
   });
 }
