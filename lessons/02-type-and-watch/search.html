@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lesson 2 — Type, and watch it change</title>
+
+    <!-- Same three tools as Lesson 1. -->
+    <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+
+    <style>
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: #faf9f7;
+        color: #1a1a1a;
+        margin: 0;
+        min-height: 100vh;
+        padding: 2rem 1.5rem;
+        box-sizing: border-box;
+      }
+      .app {
+        max-width: 42rem;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 1.6rem;
+        margin: 0 0 0.25rem;
+      }
+      .sub {
+        margin: 0 0 1.5rem;
+        color: #6b6256;
+        line-height: 1.5;
+      }
+      .searchbar {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+      .searchbar input {
+        flex: 1;
+        font-size: 1.05rem;
+        padding: 0.6rem 0.8rem;
+        border: 1px solid #d8d2c8;
+        border-radius: 8px;
+        background: #fff;
+      }
+      .searchbar button {
+        font-size: 1.05rem;
+        padding: 0.6rem 1.2rem;
+        border: 0;
+        border-radius: 8px;
+        background: #3f6f52;
+        color: #fff;
+        cursor: pointer;
+      }
+      .searchbar button:hover {
+        background: #345c44;
+      }
+      .note {
+        color: #6b6256;
+        margin: 0.5rem 0 1rem;
+      }
+      .note.error {
+        color: #8a3b28;
+      }
+      .results {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .hit {
+        background: #fff;
+        border: 1px solid #e7e2da;
+        border-radius: 10px;
+        padding: 1rem 1.2rem;
+      }
+      .ref {
+        font-size: 0.8rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: #8a7f6f;
+        margin-bottom: 0.5rem;
+      }
+      .match {
+        display: flex;
+        gap: 0.7rem;
+        align-items: baseline;
+        padding: 0.15rem 0;
+      }
+      .tname {
+        flex: none;
+        width: 3.2rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #3f6f52;
+      }
+      .text {
+        font-family: Georgia, "Times New Roman", serif;
+        line-height: 1.55;
+      }
+      mark {
+        background: #fde68a;
+        border-radius: 3px;
+        padding: 0 1px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      // React's useState is how a component remembers things that change.
+      const { useState } = React;
+
+      // Where Concord lives. Change this ONLY if Concord runs on another computer.
+      const CONCORD = "http://localhost:8000";
+
+      // GIVEN HELPER — you don't need to read this one. Concord wraps each matched word in
+      // <mark>…</mark> (e.g. "his <mark>lovingkindness</mark> endures"). This splits the snippet
+      // into pieces so we can highlight the matched word safely, as text — never raw HTML.
+      // (songbird has the same helper, grown up, in frontend/src/lib/highlight.ts.)
+      function markSegments(snippet) {
+        const pieces = [];
+        const re = /<mark>(.*?)<\/mark>/g;
+        let last = 0;
+        let m;
+        while ((m = re.exec(snippet)) !== null) {
+          if (m.index > last) {
+            pieces.push({ text: snippet.slice(last, m.index), mark: false, key: "t" + last });
+          }
+          pieces.push({ text: m[1], mark: true, key: "m" + m.index });
+          last = m.index + m[0].length;
+        }
+        if (last < snippet.length) {
+          pieces.push({ text: snippet.slice(last), mark: false, key: "t" + last });
+        }
+        return pieces;
+      }
+
+      // One search result: the reference, then each translation that used the word.
+      function Hit(props) {
+        const hit = props.hit;
+        // hit.matches holds ONLY the translations whose text actually has the word —
+        // not all 13. Others reached for a different word, so they're simply not here.
+        const translations = Object.keys(hit.matches);
+        return (
+          <li className="hit">
+            <div className="ref">{hit.reference}</div>
+            {translations.map((name) => (
+              <div className="match" key={name}>
+                <span className="tname">{name}</span>
+                <span className="text">
+                  {markSegments(hit.matches[name]).map((piece) =>
+                    piece.mark ? (
+                      <mark key={piece.key}>{piece.text}</mark>
+                    ) : (
+                      <span key={piece.key}>{piece.text}</span>
+                    )
+                  )}
+                </span>
+              </div>
+            ))}
+          </li>
+        );
+      }
+
+      function App() {
+        // Three things this app remembers, each held in state:
+        const [query, setQuery] = useState("lovingkindness"); // what's in the search box
+        const [hits, setHits] = useState([]); // the verses we found
+        const [status, setStatus] = useState("idle"); // idle | found | empty | error
+
+        async function runSearch(event) {
+          event.preventDefault(); // we run the search ourselves, not the browser's default
+          const q = query.trim();
+          if (!q) return;
+          try {
+            const response = await fetch(
+              `${CONCORD}/v1/search?q=${encodeURIComponent(q)}&translations=*`
+            );
+            if (!response.ok) throw new Error("Concord returned an error");
+            const data = await response.json();
+            setHits(data.hits); // replace the old results — React redraws, no clearing by hand
+            setStatus(data.hits.length ? "found" : "empty");
+          } catch (err) {
+            setHits([]);
+            setStatus("error");
+          }
+        }
+
+        return (
+          <div className="app">
+            <h1>Search the Bible</h1>
+            <p className="sub">
+              Find the verses where a word appears — and notice it isn’t always the word every
+              translation chose.
+            </p>
+
+            <form className="searchbar" onSubmit={runSearch}>
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="try: lovingkindness"
+                aria-label="word to search for"
+              />
+              <button type="submit">Search</button>
+            </form>
+
+            {status === "error" && (
+              <p className="note error">Couldn’t reach Concord — is it running?</p>
+            )}
+            {status === "empty" && <p className="note">No verses found for “{query.trim()}”.</p>}
+            {status === "found" && (
+              <p className="note">Each result shows the translation(s) that used your word:</p>
+            )}
+
+            <ul className="results">
+              {hits.map((hit) => (
+                <Hit key={hit.reference} hit={hit} />
+              ))}
+            </ul>
+          </div>
+        );
+      }
+
+      // Draw the app ONCE. After this, we never call render again — we change state, and
+      // React re-renders for us.
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
