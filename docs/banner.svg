@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  PLACEHOLDER BANNER — replace before publishing.
+  Kris: swap this for the real course-2 banner (course-1 spirit / dimensions).
+  Intentionally minimal; T0 does not over-invest in art.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-label="concord-tutorial-react banner (placeholder)">
+  <rect width="1280" height="320" fill="#0f172a"/>
+  <rect x="16" y="16" width="1248" height="288" fill="none" stroke="#334155" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="640" y="150" fill="#e2e8f0" font-family="system-ui, -apple-system, sans-serif" font-size="56" font-weight="700" text-anchor="middle">concord-tutorial-react</text>
+  <text x="640" y="206" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="26" text-anchor="middle">the bridge from your first app to reading real code</text>
+  <text x="640" y="270" fill="#64748b" font-family="system-ui, -apple-system, sans-serif" font-size="18" text-anchor="middle">placeholder banner — replace me</text>
+</svg>
