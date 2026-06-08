@@ -24,7 +24,9 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: tools/screenshots/package-lock.json
+          cache-dependency-path: |
+            tools/screenshots/package-lock.json
+            lessons/05-the-real-thing/compare-app/package-lock.json
 
       - name: Wait for Concord (v1.1.0) on :8000
         run: |
@@ -43,3 +45,17 @@ jobs:
       - name: Contract check (/v1 shapes vs v1.1.0)
         working-directory: tools/screenshots
         run: npm run contract
+
+      - name: Build Lesson 5 (Vite)
+        # The cheap gate proving the one build-step lesson actually builds — and it produces the
+        # dist/ that the smoke drives via `vite preview`.
+        working-directory: lessons/05-the-real-thing/compare-app
+        run: npm ci && npm run build
+
+      - name: Install Playwright browsers + system deps (incl. WebKit)
+        working-directory: tools/screenshots
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Three-engine smoke (Chromium + Firefox + WebKit)
+        working-directory: tools/screenshots
+        run: npm run smoke

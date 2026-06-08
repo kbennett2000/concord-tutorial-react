@@ -6,7 +6,8 @@
   "description": "Maintainer-only screenshot generator for concord-tutorial-react. NOT part of the course.",
   "scripts": {
     "shots": "node screenshot.mjs",
-    "contract": "node contract.mjs"
+    "contract": "node contract.mjs",
+    "smoke": "node smoke.mjs"
   },
   "devDependencies": {
     "playwright": "^1.49.0"
