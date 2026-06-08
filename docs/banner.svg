@@ -1,13 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-  PLACEHOLDER BANNER — replace before publishing.
-  Kris: swap this for the real course-2 banner (course-1 spirit / dimensions).
-  Intentionally minimal; T0 does not over-invest in art.
--->
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-label="concord-tutorial-react banner (placeholder)">
-  <rect width="1280" height="320" fill="#0f172a"/>
-  <rect x="16" y="16" width="1248" height="288" fill="none" stroke="#334155" stroke-width="2" stroke-dasharray="8 8"/>
-  <text x="640" y="150" fill="#e2e8f0" font-family="system-ui, -apple-system, sans-serif" font-size="56" font-weight="700" text-anchor="middle">concord-tutorial-react</text>
-  <text x="640" y="206" fill="#94a3b8" font-family="system-ui, -apple-system, sans-serif" font-size="26" text-anchor="middle">the bridge from your first app to reading real code</text>
-  <text x="640" y="270" fill="#64748b" font-family="system-ui, -apple-system, sans-serif" font-size="18" text-anchor="middle">placeholder banner — replace me</text>
+<svg width="1280" height="320" viewBox="0 0 1280 320" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Concord — now read the real thing.</title>
+  <desc>Banner for concord-tutorial-react, a sibling to Concord's and concord-tutorial-web's banners: the wordmark "Concord" set in a warm indigo serif on a warm cream background, with a small blueprint-style line drawing of ancient lashed-timber scaffolding centered above (a green leaf resting on its platform), and the italic tagline "now read the real thing." centered below.</desc>
+
+  <rect width="1280" height="320" fill="#F5ECDB"/>
+
+  <g transform="translate(640,65) scale(0.82)" fill="none" stroke="#2A4A6B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- scaffold structure: lashed-timber, blueprint line-art -->
+    <line x1="-30" y1="-22" x2="30" y2="-22"/>   <!-- top working platform -->
+    <line x1="-26" y1="26"  x2="-22" y2="-22"/>  <!-- left leg -->
+    <line x1="26"  y1="26"  x2="22"  y2="-22"/>  <!-- right leg -->
+    <line x1="-24" y1="4"   x2="24"  y2="4"/>    <!-- lower rail -->
+    <line x1="-22" y1="4"   x2="22"  y2="-22"/>  <!-- cross-brace -->
+    <line x1="22"  y1="4"   x2="-22" y2="-22"/>  <!-- cross-brace -->
+    <line x1="-31" y1="26"  x2="-21" y2="26"/>   <!-- left foot -->
+    <line x1="21"  y1="26"  x2="31"  y2="26"/>   <!-- right foot -->
+    <!-- rope lashings at the top joints -->
+    <g stroke="#4F6A85" stroke-width="1.6">
+      <line x1="-27" y1="-19" x2="-17" y2="-19"/>
+      <line x1="-27" y1="-16" x2="-17" y2="-16"/>
+      <line x1="17"  y1="-19" x2="27"  y2="-19"/>
+      <line x1="17"  y1="-16" x2="27"  y2="-16"/>
+    </g>
+    <!-- the growing thing: Concord's leaf, resting on the platform -->
+    <path d="M 0 -22 Q -7 -31 0 -40 Q 7 -31 0 -22 Z" fill="#4A6B3C" stroke="none"/>
+  </g>
+
+  <text x="640" y="220" text-anchor="middle"
+        font-family="'EB Garamond', 'Cormorant Garamond', Garamond, Georgia, 'Times New Roman', serif"
+        font-size="130" fill="#2A4A6B" font-weight="500" letter-spacing="3">Concord</text>
+
+  <text x="640" y="266" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="22" fill="#4F6A85" font-style="italic" letter-spacing="3">now read the real thing.</text>
 </svg>
