@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lesson 4 — Follow the thread</title>
+
+    <!-- Same three tools as before. -->
+    <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+
+    <style>
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: #faf9f7;
+        color: #1a1a1a;
+        margin: 0;
+        min-height: 100vh;
+        padding: 2rem 1.5rem;
+        box-sizing: border-box;
+      }
+      .app {
+        max-width: 40rem;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 1.6rem;
+        margin: 0 0 0.25rem;
+      }
+      .sub {
+        margin: 0 0 1.5rem;
+        color: #6b6256;
+        line-height: 1.5;
+      }
+      .here {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        background: #eef3ef;
+        border: 1px solid #d6e2da;
+        border-radius: 10px;
+        padding: 0.8rem 1.1rem;
+        margin-bottom: 1rem;
+      }
+      .here-label {
+        font-size: 0.75rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #6b8a78;
+      }
+      .here-ref {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2f5640;
+      }
+      .note {
+        color: #6b6256;
+        margin: 0.5rem 0 0.75rem;
+      }
+      .note.error {
+        color: #8a3b28;
+      }
+      .xrefs {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .xref {
+        display: block;
+        width: 100%;
+        text-align: left;
+        background: #fff;
+        border: 1px solid #e7e2da;
+        border-radius: 10px;
+        padding: 0.8rem 1rem;
+        cursor: pointer;
+        font: inherit;
+      }
+      .xref:hover {
+        background: #f4f1ec;
+        border-color: #d8d2c8;
+      }
+      .xref-ref {
+        font-weight: 600;
+        color: #3f6f52;
+      }
+      .votes {
+        font-weight: 400;
+        font-size: 0.8rem;
+        color: #b3a892;
+      }
+      .xref-text {
+        display: block;
+        margin-top: 0.3rem;
+        font-family: Georgia, "Times New Roman", serif;
+        line-height: 1.55;
+        color: #3a3a3a;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+
+      // Where Concord lives. Change this ONLY if Concord runs on another computer.
+      const CONCORD = "http://localhost:8000";
+
+      function App() {
+        const [reference, setReference] = useState("John 3:16"); // the verse we're standing on
+        const [crossRefs, setCrossRefs] = useState([]); // the verses it points to
+        const [status, setStatus] = useState("loading"); // loading | ok | none | error
+
+        // Fetch a verse's cross-references and show them. Runs on a click — and once on load.
+        async function goTo(ref) {
+          setStatus("loading");
+          try {
+            const response = await fetch(
+              `${CONCORD}/v1/cross-references/${encodeURIComponent(ref)}?include_text=true&limit=20`
+            );
+            if (!response.ok) throw new Error("not found or unreachable");
+            const data = await response.json();
+            setReference(ref);
+            setCrossRefs(data.cross_references);
+            setStatus(data.cross_references.length ? "ok" : "none");
+          } catch (err) {
+            setStatus("error");
+          }
+        }
+
+        // The ONE thing that happens on load, not from a click: show a starting verse the
+        // moment the page opens. The empty [] means "run once, when the page first appears."
+        useEffect(() => {
+          goTo("John 3:16");
+        }, []);
+
+        return (
+          <div className="app">
+            <h1>Follow the thread</h1>
+            <p className="sub">
+              Every verse points to others. Click one to travel there — and see where it leads next.
+            </p>
+
+            <div className="here">
+              <span className="here-label">You’re at</span>
+              <span className="here-ref">{reference}</span>
+            </div>
+
+            {status === "loading" && <p className="note">Loading…</p>}
+            {status === "error" && (
+              <p className="note error">Couldn’t reach Concord — is it running?</p>
+            )}
+            {status === "none" && <p className="note">No cross-references for this verse.</p>}
+
+            {status === "ok" && (
+              <div>
+                <p className="note">See also — click any verse to jump there:</p>
+                <ul className="xrefs">
+                  {crossRefs.map((entry) => (
+                    <li key={entry.to.reference}>
+                      <button className="xref" onClick={() => goTo(entry.to.reference)}>
+                        <span className="xref-ref">
+                          {entry.to.reference}
+                          {entry.votes != null && <span className="votes"> · {entry.votes}</span>}
+                        </span>
+                        {entry.text && <span className="xref-text">{entry.text}</span>}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
