@@ -152,13 +152,18 @@ async function runEngine(launcher, name, launchOpts, viteUrl) {
 // so the smoke proves the one build-step lesson actually builds and runs.
 function startPreview() {
   const cwd = join(ROOT, "lessons", "05-the-real-thing", "compare-app");
-  const proc = spawn("npm", ["run", "preview"], { cwd, stdio: ["ignore", "pipe", "pipe"], detached: true });
+  // NO_COLOR / FORCE_COLOR=0 ask Vite to print a plain banner — under CI=true it otherwise forces
+  // ANSI color, which slices escape codes through the "Local:" label and even the URL.
+  const env = { ...process.env, NO_COLOR: "1", FORCE_COLOR: "0" };
+  const proc = spawn("npm", ["run", "preview"], { cwd, env, stdio: ["ignore", "pipe", "pipe"], detached: true });
+  // Strip any ANSI escape sequences that slip through, so the match works regardless of coloring.
+  const stripAnsi = (s) => s.replace(/\x1b\[[0-9;]*m/g, "");
   return new Promise((resolve, reject) => {
     // Accumulate ALL output and match the running buffer — Vite's "Local:" banner can arrive split
     // across stdout chunks on a slow runner, so matching each chunk in isolation would miss it.
     let buf = "";
     const onData = (d) => {
-      buf += String(d);
+      buf += stripAnsi(String(d));
       const m = buf.match(/Local:\s+(http:\/\/\S+)/);
       if (m) { clearTimeout(t); resolve({ proc, url: m[1].replace(/\/$/, "") }); }
     };
