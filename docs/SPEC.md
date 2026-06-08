@@ -94,12 +94,14 @@ So this course does to **React** what course 1 did to **using an API**: it decom
 thing into **one idea per lesson, in dependency order**. React, taught this way, is a short
 ladder — and the cliff is only meeting all the rungs at once:
 
-1. **Render from data (JSX).** The page is a function of your data; you describe it, React builds
-   the DOM. *(Lesson 1)*
+1. **Render from data (JSX), via a component.** The page is a function of your data; you describe
+   it as a small component that takes its data as **props**, and React builds the DOM. *(Lesson 1 —
+   props ride in here on knowledge the reader already has: functions take inputs.)*
 2. **State and re-render.** State holds what changes; setting it re-renders — you never clear the
    old DOM by hand. *(Lesson 2 — the heart)*
-3. **Components and props.** A component is a function that takes data (props) and returns JSX;
-   you call it like a tag, and reuse it. *(Lesson 3)*
+3. **Reuse — one component, many times.** Because a component takes props (met in Lesson 1), you
+   can call it repeatedly with different data; that's the "folder of components" songbird is made
+   of. *(Lesson 3)*
 4. **Fetching, the React way.** When the user acts, go get data, then store it in state.
    *(Lesson 4)*
 
@@ -259,8 +261,9 @@ rhyming with course 1) — confirm in planning.
   is the per-translation map. **Reuse course 1's `isMissing()`** to handle an omitted verse — it
   comes back as the placeholder string `"[verse not included in this translation]"` **or** `null`
   — a deliberate callback that quietly carries course 1's honesty lesson forward.
-- **The new idea.** **Components and props.** A component is a function that takes props and
-  returns JSX; you call it like a tag.
+- **The new idea.** **Reuse — one component, many times.** Props were met in Lesson 1 (a component
+  takes its data); here that pays off — call the *same* component repeatedly with *different* data
+  (and meet the `{ }` destructuring shorthand for pulling props out, matching songbird).
 - **Win.** *"songbird has a whole **folder** of these — now you know what they are."* The mystery
   of all those files evaporates.
 - **Closer.** *"The thing that made songbird look like a wall — dozens of component files — is now
