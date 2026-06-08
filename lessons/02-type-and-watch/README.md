@@ -17,6 +17,8 @@ new idea you're here for: **state**.
 3. A list of verses appears — and each one shows *which translation* used that word, with the word
    highlighted.
 
+![Search results for "lovingkindness": a list of verses, each showing which translations contain the word, with the word highlighted — and not every translation appears.](images/search-results.png)
+
 Now try this: clear the box, type **shepherd**, and search again. The old results vanish and the new
 ones take their place. **You never told them to.** Let's see how.
 

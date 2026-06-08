@@ -16,6 +16,8 @@ component* — and it's the answer to why songbird has all those files.
 2. The box opens filled with **Psalm 23:1**. Click **Compare**.
 3. Three columns appear — the same verse in KJV, WEB, and ASV.
 
+![Psalm 23:1 in three columns — KJV ("The LORD"), WEB ("Yahweh"), and ASV ("Jehovah") — the same verse, three ways.](images/compare.png)
+
 Look across them. *The LORD* is my shepherd. *Yahweh* is my shepherd. *Jehovah* is my shepherd. One
 verse, three translators, three different ways of writing the name of God — lined up where you can
 see it at a glance. Try another reference (say, `John 1:1`) and watch all three columns change

@@ -16,6 +16,8 @@ reader does.** A click, and your app goes and gets something new.
 3. Click one — **Romans 5:8** sits right at the top. You jump there, and now you're looking at
    *Romans 5:8's* cross-references.
 
+![Cross-references for John 3:16 shown on load: a list led by Romans 5:8, each row showing the reference, its text, and a vote count.](images/on-load.png)
+
 Keep clicking. You can wander all the way across Scripture, one connection at a time, never typing a
 thing. Let's see how a click makes that happen.
 
@@ -44,6 +46,8 @@ async function goTo(ref) {
 That's the whole idea: a click runs `goTo`, `goTo` fetches the new verse's cross-references, and the
 results go into state — so the page redraws around them. **An event, a fetch, then state.** It's how
 nearly everything interactive in a real app works.
+
+![After clicking Romans 5:8: the heading updates and the list is replaced with Romans 5:8's own cross-references.](images/jumped.png)
 
 ### What Concord sends back
 

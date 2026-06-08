@@ -61,6 +61,8 @@ We've set up your Lesson 3 compare app as a real project so you can see it the m
 There's your compare app — Psalm 23:1 in three translations, divine-name contrast and all. **And no
 blink.** Type a new reference; it's instant.
 
+![The compare app running through a Vite build — the same three columns, now a real project, with no load-time blink.](images/vite-app.png)
+
 ### What changed — and what didn't
 
 Open the `compare-app` folder. The component code is the **same code you wrote in Lesson 3** — your
@@ -80,6 +82,8 @@ That's the whole build step: one tool, doing once-and-for-all what Babel was doi
 ## Part 2 — Open the real thing
 
 Now the moment this whole course was pointed at.
+
+![songbird, the full app — the reader view with cross-references, the grown-up version of what you just built.](images/songbird-reader.png)
 
 Get songbird's code: on [its GitHub page](https://github.com/kbennett2000/songbird), click the green
 **Code** button → **Download ZIP**, and unzip it. You don't need to run it — we're just going to

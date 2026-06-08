@@ -54,6 +54,13 @@ what it means" — never by being told to cause them.
 **Formatting — break the wall (a scannable page is itself reassurance).** For this reader, a page
 that *looks* easy signals "you can do this"; a dense block signals "this is hard." In every README
 and lesson:
+- **Every page carries at least one graphical element — a screenshot of the running app, near the
+  top.** A page of prose and code with *no* picture reads as a wall to this reader, however well
+  broken up — and a shot of the thing actually working is the strongest "you can do this" signal
+  there is. Every lesson README *and* the project README shows one (most show two: the happy state
+  plus a friendly error/empty state, which doubles as the "if you ever see this" reassurance). The
+  shots are produced by **maintainer-only** tooling (`tools/screenshots/`, see SPEC §9) driven
+  against a live Concord — learners never run it, and no lesson references it.
 - Keep paragraphs to 2–4 sentences, with real whitespace between them.
 - Use frequent, plain subheadings so the page scans at a glance.
 - Anything sequential is a numbered list (how-to-run is steps, not a paragraph).
