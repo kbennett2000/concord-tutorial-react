@@ -16,6 +16,8 @@ we'll meet it gently.
    Python instead? Run `python3 -m http.server 5500` from this folder.)*
 3. Your browser opens `verse.html`, and **John 3:16 appears.**
 
+![John 3:16 in the King James Version on the page: the reference in bold above the verse text.](images/verse.png)
+
 That's a React app, and you just ran one. Now let's see how a handful of lines pulled it off — it's
 less than it looks.
 

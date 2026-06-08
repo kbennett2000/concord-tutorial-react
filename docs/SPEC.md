@@ -346,14 +346,20 @@ concord-tutorial-react/
   docs/
     SPEC.md            # this file
     banner.svg
+    hero.png           # README hero: the compare app, three columns (captured by tools/screenshots)
   lessons/
-    01-the-same-verse/      README.md + verse.html
-    02-type-and-watch/      README.md + search.html
-    03-build-once/          README.md + compare.html
-    04-follow-the-thread/   README.md + crossrefs.html
-    05-the-real-thing/      README.md  (+ a vite/ starter, or step-by-step to create one)
+    01-the-same-verse/      README.md + verse.html      + images/
+    02-type-and-watch/      README.md + search.html     + images/
+    03-build-once/          README.md + compare.html    + images/
+    04-follow-the-thread/   README.md + crossrefs.html  + images/
+    05-the-real-thing/      README.md + compare-app/ (runnable Vite project) + images/
   recipes.md           # "steal these" — incl. an optional semantic-search-in-React practice
   ideas.md             # "what could you build?"
+  tools/
+    screenshots/       # MAINTAINER-ONLY (mirrors course 1's tools/screenshots): Playwright drives each
+                       #   lesson page + the Vite app against a live Concord and writes the PNGs into
+                       #   each lessons/NN/images/ and docs/hero.png. Learners never touch it; no lesson
+                       #   references it (parity with course 1's wall around its screenshot tool).
 ```
 
 Self-contained per lesson: lesson prose in each folder's own `README.md`, the lesson file beside
@@ -373,7 +379,31 @@ scoped commits (`docs:`, `feat:`, `chore:`).
 | **T3** | Lesson 3 (compare · components/props) | `<TranslationMatch>` + three-column `<Column>`; `isMissing()` carried from course 1. | T2 |
 | **T4** | Lesson 4 (cross-refs · fetching) | Verse + its cross-references; click-to-jump (event→`setState`); the one on-load `useEffect`. | T1, T3 |
 | **T5** | Lesson 5 (build step + songbird) | npm/Vite conversion (`npm run dev`), then the songbird source walkthrough + naming the four upgrades. **Verify the Vite project runs and the referenced songbird file paths exist at write time.** | T1–T4 |
-| **T6** | `recipes.md` + `ideas.md` + README polish | "Steal these" (incl. semantic-search practice), "what could you build?", final read-back-as-the-reader pass over the whole course. | T1–T5 |
+| **T6** | Screenshots (every page gets a graphical element) | Maintainer-only `tools/screenshots/` (mirrors course 1's: Playwright + `server.mjs`, driven against a **live Concord v1.1.0**) capturing the shot list below into each `lessons/NN/images/` and `docs/hero.png`; the `![…]()` insertions into all six READMEs; the CLAUDE.md graphical-element rule. Interaction-driven where needed (search/compare/Vite need fill+click; cross-refs loads on its own); `songbird-reader.png` is **copied** from songbird's `docs/screenshots/reader.png`. **Lands before T7, so the read-back reviews finished, image-bearing pages.** | T1–T5, Concord v1.1.0 |
+| **T7** | `recipes.md` + `ideas.md` + final read-back | "Steal these" (incl. the semantic-search practice), "what could you build?", and the final read-back-as-the-reader pass over the whole course — now with images in place and the closing links resolving. | T1–T6 |
+
+**Screenshot shot list (T6).** Filenames are fixed so the README refs and the tool's output line
+up; all use fixed refs/queries so shots stay stable and match the prose. Every shot is the
+*running app* against real Concord data:
+
+- **`docs/hero.png`** — the compare app, Psalm 23:1 in three columns (rides under the banner in the README).
+- **L1 `images/verse.png`** — John 3:16 (KJV) rendered.
+- **L2 `images/search-results.png`** — a search for "lovingkindness" (fill + click + wait), several hits with highlighted matches.
+- **L3 `images/compare.png`** — Psalm 23:1 across KJV/WEB/ASV (fill + click), the divine-name contrast.
+- **L4 `images/on-load.png`** — John 3:16's cross-refs on load (Romans 5:8 at top) · **`images/jumped.png`** — after clicking Romans 5:8, list replaced.
+- **L5 `images/vite-app.png`** — the `compare-app` running through Vite (`npm run dev` up first) · **`images/songbird-reader.png`** — *copied* from songbird's `docs/screenshots/reader.png`.
+
+Placement: the primary shot rides high (top of the lesson's "see it work / run"); secondary shots
+sit beside the section that discusses that state. Rich, descriptive alt text on every image (course
+1's style) — both the accessibility story and the fallback if an image fails to load. The
+search/compare/Vite apps start idle, so the tool fills + clicks + waits before snapping; only
+cross-refs populates on its own.
+
+*Deferred:* the originally-planned error/empty secondary shots (L1's "Couldn't reach Concord,"
+L2's "no matches") have no home — the lesson READMEs carry no error/empty-state prose to anchor
+them. Adding that brief "if you ever see this" reassurance (course 1 has it; this course doesn't
+yet) is a separate prose change, not part of a screenshots slice. Every page still carries a
+graphical element without them.
 
 **Spec-first per slice (course 1 rhythm):** each slice opens in Plan Mode against this spec; Kris
 approves the plan before implementation.

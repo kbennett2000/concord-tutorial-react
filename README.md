@@ -13,6 +13,8 @@ There's no cliff here — just a short set of steps. Five lessons, **one new ide
 the app you already know. By the last one you'll open that "real" project again and recognize it:
 *your* code, grown up. Because the point isn't React. The point is you, reading real code.
 
+![The compare app you'll build in this course — Psalm 23:1 shown side by side in the KJV, WEB, and ASV.](docs/hero.png)
+
 ## Who this is for
 
 You did [the first course](https://github.com/kbennett2000/concord-tutorial-web) — or you can
