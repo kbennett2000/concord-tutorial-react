@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lesson 3 — Build a piece once, use it everywhere</title>
+
+    <!-- Same three tools as before. -->
+    <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+
+    <style>
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: #faf9f7;
+        color: #1a1a1a;
+        margin: 0;
+        min-height: 100vh;
+        padding: 2rem 1.5rem;
+        box-sizing: border-box;
+      }
+      .app {
+        max-width: 52rem;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 1.6rem;
+        margin: 0 0 0.25rem;
+      }
+      .sub {
+        margin: 0 0 1.5rem;
+        color: #6b6256;
+        line-height: 1.5;
+      }
+      .searchbar {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.25rem;
+      }
+      .searchbar input {
+        flex: 1;
+        font-size: 1.05rem;
+        padding: 0.6rem 0.8rem;
+        border: 1px solid #d8d2c8;
+        border-radius: 8px;
+        background: #fff;
+      }
+      .searchbar button {
+        font-size: 1.05rem;
+        padding: 0.6rem 1.2rem;
+        border: 0;
+        border-radius: 8px;
+        background: #3f6f52;
+        color: #fff;
+        cursor: pointer;
+      }
+      .searchbar button:hover {
+        background: #345c44;
+      }
+      .note {
+        color: #6b6256;
+        margin: 0.5rem 0 1rem;
+      }
+      .note.error {
+        color: #8a3b28;
+      }
+      .columns {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+      }
+      .col {
+        background: #fff;
+        border: 1px solid #e7e2da;
+        border-radius: 10px;
+        padding: 1rem 1.1rem;
+      }
+      .colname {
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #3f6f52;
+        margin: 0 0 0.6rem;
+      }
+      .verse {
+        font-family: Georgia, "Times New Roman", serif;
+        line-height: 1.6;
+        margin: 0 0 0.5rem;
+      }
+      .vnum {
+        font-family: system-ui, sans-serif;
+        font-size: 0.7rem;
+        color: #b3a892;
+        margin-right: 0.4rem;
+        vertical-align: 0.15em;
+      }
+      .missing {
+        color: #b3a892;
+        font-style: italic;
+      }
+      @media (max-width: 680px) {
+        .columns {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState } = React;
+
+      // Where Concord lives. Change this ONLY if Concord runs on another computer.
+      const CONCORD = "http://localhost:8000";
+
+      // GIVEN HELPER (from your first course). A translation that doesn't include a verse comes back
+      // either as null or as the literal text "[verse not included in this translation]". Either
+      // way it's missing — so we can show an honest note instead of blank space.
+      function isMissing(text) {
+        return (
+          text === null ||
+          text === undefined ||
+          text === "[verse not included in this translation]"
+        );
+      }
+
+      // ONE component — written once. We use it three times below, once per translation.
+      // `{ name, verses }` pulls those two props straight out of the data handed in.
+      function Column({ name, verses }) {
+        return (
+          <div className="col">
+            <h2 className="colname">{name}</h2>
+            {verses.map((verse) => {
+              const text = verse.text[name]; // this translation's text for this verse
+              return (
+                <p className="verse" key={verse.reference}>
+                  <span className="vnum">{verse.verse}</span>
+                  {isMissing(text) ? (
+                    <span className="missing">not in this translation</span>
+                  ) : (
+                    text
+                  )}
+                </p>
+              );
+            })}
+          </div>
+        );
+      }
+
+      function App() {
+        const [reference, setReference] = useState("Psalm 23:1"); // what's in the box
+        const [verses, setVerses] = useState([]); // the verse(s) we're comparing
+        const [status, setStatus] = useState("idle"); // idle | ok | error
+
+        async function compare(event) {
+          event.preventDefault();
+          const ref = reference.trim();
+          if (!ref) return;
+          try {
+            const response = await fetch(
+              `${CONCORD}/v1/verses/${encodeURIComponent(ref)}?translations=KJV,WEB,ASV`
+            );
+            if (!response.ok) throw new Error("not found or unreachable");
+            const data = await response.json();
+            setVerses(data.verses);
+            setStatus("ok");
+          } catch (err) {
+            setVerses([]);
+            setStatus("error");
+          }
+        }
+
+        return (
+          <div className="app">
+            <h1>Compare translations</h1>
+            <p className="sub">Read a verse side by side in three translations — KJV, WEB, and ASV.</p>
+
+            <form className="searchbar" onSubmit={compare}>
+              <input
+                value={reference}
+                onChange={(event) => setReference(event.target.value)}
+                placeholder="try: Psalm 23:1"
+                aria-label="verse reference"
+              />
+              <button type="submit">Compare</button>
+            </form>
+
+            {status === "error" && (
+              <p className="note error">
+                Couldn’t find that — check the reference, and that Concord is running.
+              </p>
+            )}
+
+            {status === "ok" && verses.length > 0 && (
+              <div className="columns">
+                {/* The SAME Column component, three times — each with a different translation. */}
+                <Column name="KJV" verses={verses} />
+                <Column name="WEB" verses={verses} />
+                <Column name="ASV" verses={verses} />
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
