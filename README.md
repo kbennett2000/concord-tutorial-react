@@ -55,6 +55,12 @@ What's ahead, one small win at a time: the same verse the new way, a search that
 type, your own reusable building blocks, verses that link to other verses — and then the lesson
 that's really the point: opening a real app and finding you can read it.
 
+And when you can read the real thing, there's one course left:
+**[concord-tutorial-ai](https://github.com/kbennett2000/concord-tutorial-ai)** — your fetch
+skills, pointed at an AI on your own computer, until it quotes Scripture only from your Concord.
+It's plain HTML and JavaScript, so friends who skipped React can go straight there from the first
+course.
+
 ## License
 
 MIT © 2026 Kris Bennett — see [`LICENSE`](LICENSE). (Parity with Concord and the first course.)
