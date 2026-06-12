@@ -135,3 +135,8 @@ recognize the bones, and find your way in. You can do that now.
 You're a Concord builder. Go build something — [a few ideas to start from](../../ideas.md), or
 [snippets to steal](../../recipes.md). And songbird's whole source is right there whenever you want
 it, waiting to be read.
+
+And when you want a next course: **[concord-tutorial-ai](https://github.com/kbennett2000/concord-tutorial-ai)**
+points the fetch skills you already have at an AI running on your own computer — and grounds it so it
+quotes Scripture only from your Concord. It's plain HTML and JavaScript, a gentle next step from right
+here.
